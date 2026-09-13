@@ -434,4 +434,40 @@
             return currentDisplayedWallpapers;
         }
 
-        document.getElementById('searchInput').addEv                         
+        document.getElementById('searchInput').addEv document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            currentDisplayedWallpapers = wallpapers.filter(w => 
+                w.title.toLowerCase().includes(query) || 
+                w.tags.some(tag => tag.toLowerCase().includes(query))
+            );
+            renderGallery(currentDisplayedWallpapers);
+        });
+
+        // ===== FERMETURE LIGHTBOX =====
+        document.getElementById('closeLightbox').addEventListener('click', closeLightbox);
+        document.getElementById('lightboxBackdrop').addEventListener('click', closeLightbox);
+
+        // ===== BOUTON FAVORIS NAV =====
+        document.getElementById('favoritesBtn').addEventListener('click', () => {
+            const favIds = favManager.getAll();
+            const favWallpapers = wallpapers.filter(w => favIds.includes(w.id));
+            currentDisplayedWallpapers = favWallpapers.length > 0 ? favWallpapers : [];
+            renderGallery(currentDisplayedWallpapers);
+            
+            if(favWallpapers.length === 0) {
+                document.getElementById('noResults').classList.remove('hidden');
+                document.getElementById('noResults').querySelector('p').textContent = "Tu n'as encore aucun favori ❤️";
+            }
+        });
+
+        // ===== INIT =====
+        renderGallery();
+        updateFavoritesCount();
+
+        // Fermer avec Echap
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'Escape') closeLightbox();
+        });
+    </script>
+</body>
+</html>                        
